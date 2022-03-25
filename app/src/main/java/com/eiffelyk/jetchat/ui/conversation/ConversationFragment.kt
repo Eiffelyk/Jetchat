@@ -4,18 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.dp
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import com.eiffelyk.jetchat.MainViewModel
+import com.eiffelyk.jetchat.R
+import com.eiffelyk.jetchat.data.exampleUiState
 import com.eiffelyk.jetchat.ui.theme.JetchatTheme
 
 class ConversationFragment : Fragment() {
@@ -24,7 +23,7 @@ class ConversationFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = ComposeView(inflater.context).apply {
+    ): View = ComposeView(inflater.context).apply {
         layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
@@ -32,13 +31,17 @@ class ConversationFragment : Fragment() {
         setContent {
             CompositionLocalProvider(LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher) {
                 JetchatTheme {
-                    Column {
-                        Text(text = "按钮", modifier = Modifier.padding(100.dp)
-                            .size(50.dp)
-                            .clickable {
-                                activityViewModel.openDrawer()
-                            })
-                    }
+                    ConversationContent(
+                        uiState = exampleUiState,
+                        navigateToProfile = {
+                            val bundle = bundleOf("userId" to it)
+                            findNavController().navigate(R.id.nav_profile, bundle)
+                        },
+                        onNavIconPressed = { activityViewModel.openDrawer() },
+                        modifier = Modifier.windowInsetsPadding(
+                            WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                        )
+                    )
                 }
             }
         }

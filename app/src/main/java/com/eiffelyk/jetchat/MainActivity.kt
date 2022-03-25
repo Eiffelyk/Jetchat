@@ -52,19 +52,20 @@ class MainActivity : AppCompatActivity() {
                 }
                 JetchatScaffold(
                     drawerState = drawerState,
-                    onProfileClicked = {
+                    onChatClicked = {
                         findNavController().popBackStack(R.id.nav_home, false)
                         scope.launch {
                             drawerState.close()
                         }
                     },
-                    onChatClicked = {
+                    onProfileClicked = {
                         val bundle = bundleOf("userId" to it)
                         findNavController().navigate(R.id.nav_profile, bundle)
                         scope.launch {
                             drawerState.close()
                         }
-                    }) {
+                    }
+                ) {
                     AndroidViewBinding(ContentMainBinding::inflate)
                 }
             }
@@ -82,18 +83,5 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         return navHostFragment.navController
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    JetchatTheme {
-        Greeting("Android")
     }
 }
